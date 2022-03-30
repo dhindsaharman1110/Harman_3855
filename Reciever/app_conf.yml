@@ -1,0 +1,9 @@
+version: 1
+eventstore1: 
+  url: http://localhost:8090/readings/age_n_gender
+eventstore2:
+  url: http://localhost:8090/readings/height_n_weight
+events:
+  hostname: mykafka.eastus.cloudapp.azure.com
+  port: 9092
+  topic: evetns

@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  description: This API will recieve reading events from user mobile or tablet.
+  version: "1.0.0"
+  title: Stats API
+  contact:
+    email: hdhindsa3@my.bcit.ca
+tags:
+  - name: devices
+    description: Operations available to cellphones and tablets
+paths:
+  /stats:
+    get:
+      summary: Gets the event stats
+      operationId: app.get_stats
+      description: Gets Age and gender as well as Height and Weight processsed statistics
+      responses:
+        '200':
+          description: Successfully returned a list of Age and gender events events
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ReadingStats'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+components:
+  schemas:
+    ReadingStats:
+      required:
+      - num_a_g_readings
+      - max_a_readings
+      - num_h_w_readings
+      - max_h_readings
+      - max_w_readings
+      properties:
+        num_a_g_readings:
+          type: integer
+          example: 20
+        max_a_reading:
+          type: integer
+          example: 20
+        num_h_w_reading:
+          type: integer
+          example: 10
+        max_h_readings:
+          type: integer
+          example: 150
+        max_w_reading:
+          type: integer
+          example: 250
+      type: object  

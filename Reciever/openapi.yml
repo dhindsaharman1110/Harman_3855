@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  description: This API will recieve reading events from user mobile or tablet.
+  version: "1.0.0"
+  title: Reading API
+  contact:
+    email: hdhindsa3@my.bcit.ca
+tags:
+  - name: devices
+    description: Operations available to cellphones and tablets
+paths:
+  /readings/age_n_gender:
+    post:
+      tags:
+        - devices
+      summary: Reports the age and gender of the user
+      operationId: app.report_age_n_gender_reading
+      description: Adds a new age and gender reading to the current system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Age_n_gender'
+        description: Age and Gender of the user
+        
+        
+  /readings/height_n_weight:
+    post:
+      tags:
+        - devices
+      summary: Reports the height and weight of the user
+      operationId: app.report_height_n_weight_reading
+      description: Adds a new height and weight reading to the current system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Height_n_weight'
+        description: Height of the user
+      
+        
+components:
+  schemas:
+    Age_n_gender:
+      required:
+        - user_id
+        - user_name
+        - user_age
+        - user_gender
+        - timestamp
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_name:
+          type: string
+          example: Harman
+        user_age:
+          type: integer
+          example: 28
+        user_gender:
+          type: string
+          example: M
+        timestamp:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+      type: object
+    
+    Height_n_weight:
+      required:
+        - user_id
+        - user_name
+        - user_height
+        - user_weight
+        - timestamp
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_name:
+          type: string
+          example: Harman
+        user_height:
+          type: integer
+          example: 180
+        user_weight:
+          type: integer
+          example: 100
+        timestamp:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+      type: object
+      

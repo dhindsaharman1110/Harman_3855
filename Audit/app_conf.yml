@@ -1,0 +1,5 @@
+version: 1
+events:
+  hostname: mykafka.eastus.cloudapp.azure.com
+  port: 9092
+  topic: evetns

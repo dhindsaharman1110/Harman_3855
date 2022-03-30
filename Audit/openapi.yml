@@ -1,0 +1,152 @@
+openapi: 3.0.0
+info:
+  description: This API provides audit info
+  version: "1.0.0"
+  title: Audit API
+  contact:
+    email: hdhindsa3@bcit.ca
+paths:
+  /age_n_gender:
+    get:
+      summary: gets a age and gender reading from history
+      operationId: app.get_age_n_gender_reading
+      description: Gets age and gender readings from the event store
+      parameters:
+        - name: index
+          in: query
+          description: Gets the Age at the index in the event store
+          schema:
+            type: integer
+            example: 20
+      responses:
+        '200':
+          description: Successfully returned a Age Reading event
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Age_n_Gender'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /height_n_weight:
+    get:
+      summary: gets a height and weight reading from history
+      operationId: app.get_height_n_weight_reading
+      description: Gets height and weight reading from the event store
+      parameters:
+        - name: index
+          in: query
+          description: Gets the Height and Weight Reading at the index in the event store
+          schema:
+            type: integer
+            example: 100
+      responses:
+        '200':
+          description: Successfully returned a height and weight reading 
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Height_n_Weight'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+components:
+  schemas:
+    Age_n_Gender:
+      required:
+        - user_id
+        - user_name
+        - user_age
+        - user_gender
+        - timestamp
+        - trace_id
+        - date_created
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_name:
+          type: string
+          example: Harman
+        user_age:
+          type: integer
+          example: 28
+        user_gender:
+          type: string
+          example: M
+        timestamp:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        trace_id: 
+          type: string
+          example: '2016-08-29T09:12:33.001Z0.7009290701629508'
+        date_created:
+          type: string
+          format: dat-time
+          example: '2022-02-24 20:21:12.077371'
+      type: object
+      
+    Height_n_Weight:
+      required:
+        - user_id
+        - user_name
+        - user_height
+        - user_weight
+        - timestamp
+        - trace_id
+        - date_created
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_name:
+          type: string
+          example: Harman
+        user_height:
+          type: integer
+          example: 180
+        user_weight:
+          type: integer
+          example: 100
+        timestamp:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        trace_id:
+          type: string
+          example: '2016-08-29T09:12:33.001Z0.7009290701629508'
+        date_created:
+          type: string
+          format: dat-time
+          example: '2022-02-24 20:21:12.077371'
+      type: object
