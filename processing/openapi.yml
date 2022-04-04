@@ -45,16 +45,16 @@ components:
         num_a_g_readings:
           type: integer
           example: 20
-        max_a_reading:
+        max_a_readings:
           type: integer
           example: 20
-        num_h_w_reading:
+        num_h_w_readings:
           type: integer
           example: 10
         max_h_readings:
           type: integer
           example: 150
-        max_w_reading:
+        max_w_readings:
           type: integer
           example: 250
       type: object  
