@@ -14,7 +14,7 @@ from connexion import NoContent
 from flask import appcontext_popped
 from runpy import run_path
 from time import time
-
+from flask_cors import CORS, cross_origin
 
 '''Loading the app configuration file'''
 with open('app_conf.yml', 'r') as f:
@@ -83,6 +83,8 @@ def get_height_n_weight_reading(index):
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
+CORS(app.py)
+app.app.config['CORS_HEADERS'] = 'Content-Type'
 app.add_api("openapi.yml")
 
 
