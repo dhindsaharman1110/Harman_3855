@@ -83,7 +83,7 @@ def get_height_n_weight_reading(index):
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
-CORS(app.py)
+CORS(app.app)
 app.app.config['CORS_HEADERS'] = 'Content-Type'
 app.add_api("openapi.yml")
 
