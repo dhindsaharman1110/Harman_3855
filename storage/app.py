@@ -91,7 +91,7 @@ def process_messages():
                                payload['timestamp'],
                                payload['trace_id'])
             session.add(agd)
-            session.commit()
+            session.commit()            
             session.close()
         elif msg["type"] == "Height and Weight":
             session = DB_SESSION()
