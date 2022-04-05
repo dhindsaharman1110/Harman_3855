@@ -117,14 +117,17 @@ def populate_stats():
     
     now = datetime.now()  
     
-    
+    current_timestamp = str(now.strftime(f"%Y-%m-%dT%H:%M:%S"))    
     # print(time_to_put)
     
     # print(f"{stats.last_updateds}*************")
 
     
-    r_ag = requests.get("http://localhost:8090/readings/age_n_gender", params={'timestamp': time_to_put})
-
+    # r_ag = requests.get("http://localhost:8090/readings/age_n_gender", params={'timestamp': time_to_put})
+    r_ag = requests.get(app_config["eventstore"]["url"] + 
+                        "/readings/age_n_gender?timestamp=" + 
+                        time_to_put + "&end_timestamp=" + current_timestamp)
+    
     if r_ag.status_code != 200:
         logger.error(f"\n******************* Storage service returns a status code other that 200 **************************\n")
     else:    
@@ -147,8 +150,11 @@ def populate_stats():
 
 
 
-    r_hw = requests.get("http://localhost:8090/readings/height_n_weight", params={'timestamp': time_to_put})
-
+    # r_hw = requests.get("http://localhost:8090/readings/height_n_weight", params={'timestamp': time_to_put})
+    r_hw = requests.get(app_config["eventstore"]["url"] + 
+                        "/readings/height_n_weight?timestamp=" + 
+                        time_to_put + "&end_timestamp=" + current_timestamp)
+    
     if r_hw.status_code != 200:
         logger.error(f"\n******************* Storage service returns a status code other that 200 **************************\n")
     else:

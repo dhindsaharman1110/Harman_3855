@@ -1,5 +1,7 @@
+from operator import and_
 import connexion
 import datetime
+import time
 import json
 import os.path
 import logging
@@ -16,6 +18,7 @@ from platform import python_branch
 from pykafka import KafkaClient
 from pykafka.common import OffsetType
 from threading import Thread
+from sqlalchemy import and_
 
 
 
@@ -40,15 +43,18 @@ def trace_id(time_stamp):
 
 compare_old = []
 
-def get_age_n_gender_readings(timestamp):
+def get_age_n_gender_readings(timestamp, end_timestamp):
     logger.info(f"(Connecting to DB. Hostname: {app_config['datastore']['hostname']}, Port: {app_config['datastore']['port']} )")
     """ Gets new age and gender readings after the timestamp """
     session = DB_SESSION()
+    
     time_format = f"%Y-%m-%dT%H:%M:%SZ"
+    
     timestamp_datetime = datetime.datetime.strptime(timestamp, time_format)
-    print(timestamp_datetime)
-    readings = session.query(Age_n_gender).filter(Age_n_gender.date_created >=
-    timestamp_datetime)
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, time_format)
+    readings = session.query(Age_n_gender).filter(
+        and_(Age_n_gender.date_created >= timestamp_datetime,
+            Age_n_gender.date_created <  end_timestamp_datetime))
     results_list = []
     for reading in readings:
         results_list.append(reading.to_dict())
@@ -56,14 +62,19 @@ def get_age_n_gender_readings(timestamp):
     logger.info("Query for Age and Gender readings after %s returns %d results" %(timestamp, len(results_list)))
     return results_list, 200
 
-def get_height_n_weight_readings(timestamp):
+def get_height_n_weight_readings(timestamp, end_timestamp):
     logger.info(f"(Connecting to DB. Hostname: {app_config['datastore']['hostname']}, Port: {app_config['datastore']['port']} )")
     """ Gets new age and gender readings after the timestamp """
     session = DB_SESSION()
+    
     time_format = f"%Y-%m-%dT%H:%M:%SZ"
+    
     timestamp_datetime = datetime.datetime.strptime(timestamp, time_format)
-    readings = session.query(Height_n_weight).filter(Height_n_weight.date_created >=
-    timestamp_datetime)
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, time_format)
+    
+    readings = session.query(Height_n_weight).filter(
+        and_(Height_n_weight.date_created >= timestamp_datetime,
+             Height_n_weight.date_created < end_timestamp_datetime))
     results_list = []
     for reading in readings:
         results_list.append(reading.to_dict())
@@ -74,8 +85,22 @@ def get_height_n_weight_readings(timestamp):
 def process_messages():
     """ Process event messages """
     hostname = f"%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
-    client = KafkaClient(hosts=hostname)
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    
+    max_count = 0
+    while max_count < app_config["events"]["num"]:
+        logger.info(f"Trying to connect and current count is {max_count}")
+        try:
+            client = KafkaClient(hosts=hostname)
+            topic = client.topics[str.encode(app_config["events"]["topic"])]
+        except:
+            logger.error("Connection Failed")
+            time.sleep(app_config["events"]["s_time"])
+            max_count = max_count + 1
+            
+            
+    
+    
+    
     consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST)
     for msg in consumer:
         msg_str = msg.value.decode('utf-8')
