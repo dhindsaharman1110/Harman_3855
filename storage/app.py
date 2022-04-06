@@ -88,15 +88,18 @@ def process_messages():
     
     max_count = 0
     while max_count < app_config["events"]["num"]:
-        logger.info(f"Trying to connect and current count is {max_count}")
+   #     logger.info(f"Trying to connect and current count is {max_count}")
         try:
+            logger.info(f"Trying to connect and current count is {max_count}")
             client = KafkaClient(hosts=hostname)
             topic = client.topics[str.encode(app_config["events"]["topic"])]
+            logger.info("Connected")
+            break
         except:
             logger.error("Connection Failed")
             time.sleep(app_config["events"]["s_time"])
             max_count = max_count + 1
-            
+    
             
     
     

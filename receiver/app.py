@@ -6,7 +6,7 @@ import os.path
 import requests
 import yaml
 import logging.config
-
+from time import sleep
 from pykafka import KafkaClient
 from random import random
 from datetime import datetime
@@ -30,6 +30,23 @@ def trace_id(time_stamp):
 
 
 
+
+retry_count = 0
+
+
+while retry_count < app_config["events"]["retry_count"]:
+    try:
+        logger.info(f"trying to connect {retry_count}")
+        client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
+        topic = client.topics[str.encode(app_config['events']['topic'])]
+        producer = topic.get_sync_producer()
+        break
+    except:
+        logger.error("It does not work, lOL")
+        retry_count = retry_count + 1
+        sleep(app_config["events"]["sleep_time"])
+
+
 def report_age_n_gender_reading(body):
     now = datetime.now()
     run_path = app_config['eventstore1']['url']
@@ -42,9 +59,9 @@ def report_age_n_gender_reading(body):
     """ 
     Kafka setup
     """
-    client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
-    topic = client.topics[str.encode(app_config['events']['topic'])]
-    producer = topic.get_sync_producer()
+#    client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
+#    topic = client.topics[str.encode(app_config['events']['topic'])]
+    #producer = topic.get_sync_producer()
     msg = {"type": "Age and Gender",
             "datetime": datetime.now().strftime(f"%Y-%m-%dT%H:%M:%S"),
             "payload": body
@@ -66,9 +83,9 @@ def report_height_n_weight_reading(body):
     """ 
     Kafka setup
     """
-    client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
-    topic = client.topics[str.encode(app_config['events']['topic'])]
-    producer = topic.get_sync_producer()
+ #   client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
+  #  topic = client.topics[str.encode(app_config['events']['topic'])]
+   # producer = topic.get_sync_producer()
     msg = {"type": "Height and Weight",
             "datetime": datetime.now().strftime(f"%Y-%m-%dT%H:%M:%S"),
             "payload": body

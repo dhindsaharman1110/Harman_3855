@@ -117,7 +117,7 @@ def populate_stats():
     
     now = datetime.now()  
     
-    current_timestamp = str(now.strftime(f"%Y-%m-%dT%H:%M:%S"))    
+    current_timestamp = str(now.strftime(f"%Y-%m-%dT%H:%M:%SZ"))    
     # print(time_to_put)
     
     # print(f"{stats.last_updateds}*************")
