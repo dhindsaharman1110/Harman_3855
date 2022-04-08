@@ -5,6 +5,7 @@ import json
 import os.path
 import requests
 import yaml
+import os
 import logging.config
 from time import sleep
 from pykafka import KafkaClient
@@ -15,21 +16,42 @@ from flask import appcontext_popped
 from runpy import run_path
 from time import time
 
-with open('app_conf.yml', 'r') as f:
-    app_config = yaml.safe_load(f.read())
-    # print(app_config)
-
-with open('log_conf.yml', 'r') as f:
-    log_config = yaml.safe_load(f.read())
-    logging.config.dictConfig(log_config)
-    logger = logging.getLogger("basicLogger")
-
 
 def trace_id(time_stamp):
     return str(f"{time_stamp}{str(random())}")
 
 
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
 
+
+with open(app_conf_file, 'r') as f:
+    app_config = yaml.safe_load(f.read())
+# External Logging Configuration
+with open(log_conf_file, 'r') as f:
+    log_config = yaml.safe_load(f.read())
+    logging.config.dictConfig(log_config)
+
+
+logger = logging.getLogger('basicLogger')
+logger.info("App Conf File: %s" % app_conf_file)
+logger.info("Log Conf File: %s" % log_conf_file)
+
+
+
+#def trace_id(time_stamp):
+#    return str(f"{time_stamp}{str(random())}")
+
+
+
+#def trace_id(time_stamp):i
+ #   return str(f"{time_stamp}{str(random())}")
 
 retry_count = 0
 

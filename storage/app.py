@@ -41,6 +41,30 @@ def trace_id(time_stamp):
     return str(f"{time_stamp}{str(random())}")
 
 
+def write_data_into_file(data):
+    EVENT_FILE="data.json"
+    MAX_EVENTS=10
+    if os.path.isfile(EVENT_FILE) == False:
+        c=open(EVENT_FILE, "w")
+        c.write("[]")
+        c.close()
+
+    f=open(EVENT_FILE, "r")
+    old_data = f.read()
+    f.close()
+    
+    old_data=json.loads(old_data)
+    
+    if len(old_data) == MAX_EVENTS:
+        old_data.pop(0)
+    old_data.append(data)
+    
+    h=open(EVENT_FILE, "w")
+    h.write(json.dumps(old_data, indent=4))
+    h.close()
+
+
+
 compare_old = []
 
 def get_age_n_gender_readings(timestamp, end_timestamp):
