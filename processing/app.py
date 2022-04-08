@@ -1,3 +1,4 @@
+import sqlite3
 import yaml
 import requests
 import connexion
@@ -12,6 +13,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from base import Base
 from stats import Stats
 from flask_cors import CORS, cross_origin
+from pathlib import Path
+
 
 global total
 global total_hw
@@ -30,6 +33,42 @@ with open('log_conf.yml', 'r') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
     logger = logging.getLogger('basicLogger')
+
+
+#from pathlib import Path
+
+path_to_file = app_config['datastore']['filename']
+path = Path(path_to_file)
+
+if path.is_file():
+    print(f'The file {path_to_file} exists')
+
+else:
+    print(f'The file {path_to_file} does not exist')
+
+
+    conn = sqlite3.connect(path_to_file)
+
+    c = conn.cursor()
+    c.execute('''
+                CREATE TABLE stats
+                (id INTEGER PRIMARY KEY ASC,
+                num_a_g_readings INTEGER NOT NULL,
+                max_a_readings INTEGER,
+                num_h_w_readings INTEGER NOT NULL,
+                max_h_readings INTEGER,
+                max_w_readings INTEGER,
+                last_updateds VARCHAR(100) NOT NULL
+                )
+            ''')
+
+
+    conn.commit()
+    conn.close()
+
+
+
+
 
 DB_ENGINE = create_engine("sqlite:///%s" % app_config["datastore"]["filename"])
 Base.metadata.bind = DB_ENGINE
